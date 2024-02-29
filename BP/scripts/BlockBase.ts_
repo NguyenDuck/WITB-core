@@ -1,0 +1,71 @@
+import {
+	Block,
+	BlockComponentTypeMap,
+	BlockPermutation,
+	BlockType,
+	ItemStack,
+	Vector3,
+} from '@minecraft/server'
+
+export default class BlockBase {
+	private _namespace: string
+	private _name: string
+
+	constructor(private block: Block) {
+		let [ns, n] = block.typeId.split(':')
+		this.namespace = ns
+		this.name = n
+	}
+
+	get namespace(): string {
+		return this._namespace
+	}
+
+	private set namespace(value: string) {
+		this._namespace = value
+	}
+
+	get name(): string {
+		return this._name
+	}
+
+	private set name(value: string) {
+		this._name = value
+	}
+
+	get typeId(): string {
+		return this.block.type.id
+	}
+
+	get type(): BlockType {
+		return this.block.type
+	}
+
+	get permutation(): BlockPermutation {
+		return this.block.permutation
+	}
+
+	get location(): Vector3 {
+		return this.block.location
+	}
+
+	get tags(): string[] {
+		return this.block.getTags()
+	}
+
+	get itemStack(): ItemStack {
+		return this.block.getItemStack()!
+	}
+
+	getRedstonePower(): number | undefined {
+		return this.block.getRedstonePower()
+	}
+
+	getComponent<T extends keyof BlockComponentTypeMap>(type: T) {
+		return this.block.getComponent(type)
+	}
+
+	isVanilla(): boolean {
+		return this.namespace == 'minecraft'
+	}
+}

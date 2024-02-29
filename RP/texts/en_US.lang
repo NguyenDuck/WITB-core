@@ -1,3 +1,14 @@
 minecraft=Minecraft
-growth.description.0=Growth: §g%1%%
-growth.description.1=§aFully grown
+
+crops.growth.0=Growth: §g%1%%
+crops.growth.1=§aFully grown
+
+redstone.power=Power: §g%1
+redstone.repeater.delay=Delay: §g%1
+redstone.comparator.mode.0=Mode: §gSubtractor
+redstone.comparator.mode.1=Mode: §gComparator
+
+bee.honey.0=Honey: §g%1 / 5
+bee.honey.1=Honey: §a5 / 5
+
+respawn_anchor.charge=Charge: §g%1 / 4

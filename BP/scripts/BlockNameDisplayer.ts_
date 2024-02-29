@@ -1,0 +1,80 @@
+import { Container, EntityInventoryComponent, ItemStack } from '@minecraft/server'
+import { Displayer } from './Displayer'
+import { TransKey } from './types'
+import UIEnum from './UIEnum'
+
+export default class BlockNameDisplayer extends Displayer {
+	private _name: TransKey
+	private _container: Container
+	private _namespace: string
+	private _isChanged: boolean
+
+	get isChanged(): boolean {
+		return this._isChanged
+	}
+
+	private set isChanged(value: boolean) {
+		this._isChanged = value
+	}
+
+	get name(): TransKey {
+		return this._name
+	}
+
+	set name(name: TransKey) {
+		if (this.name && this.name.equals(name)) return
+		this._name = name
+		this.isChanged = true
+	}
+
+	get namespace(): string {
+		return this._namespace
+	}
+
+	set namespace(namespace: string) {
+		if (this.namespace === namespace) return
+		this._namespace = namespace
+		this.isChanged = true
+	}
+
+	removeName() {
+		this.name = new TransKey('')
+		this.sendTitle(UIEnum.GeneralViewDisabled)
+	}
+
+	get container(): Container {
+		return this._container
+	}
+
+	private set container(value: Container) {
+		this._container = value
+	}
+
+	public send(): void {
+		if (!this.isChanged) return
+		this.sendTitle(
+			[UIEnum.GeneralViewName, `'${this.name}'`],
+			[UIEnum.GeneralViewNamespace, { translate: this.namespace }]
+		)
+		this.isChanged = false
+	}
+
+	private getPlayerInv(): Container {
+		if (!this.container) {
+			this.container = (
+				this.player.getComponent(
+					EntityInventoryComponent.componentId
+				) as EntityInventoryComponent
+			).container!
+		}
+		return this.container
+	}
+
+	get playerItem(): ItemStack | undefined {
+		return this.getPlayerInv().getItem(17)
+	}
+
+	set playerItem(item: ItemStack | undefined) {
+		this.getPlayerInv().setItem(17, item)
+	}
+}

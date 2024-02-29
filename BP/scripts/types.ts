@@ -1,7 +1,5 @@
 import { RawMessage } from '@minecraft/server'
 
-export type Message = string | RawMessage | (string | RawMessage)[]
-
 export type BlockStateMap = Map<string, string | number | boolean>
 
 export enum TransType {
@@ -11,36 +9,37 @@ export enum TransType {
 }
 
 export class TransKey {
-	constructor(public Prefix: TransType, public Name: string) {}
-
-	toString(): string {
-		return `${this.Prefix}.${this.Name}.name`
-	}
-
-	toRawMessage(): RawMessage {
-		return {
-			translate: this.toString(),
-		}
-	}
+	constructor(public name: string, public type: TransType = TransType.Block) {}
 
 	equals(other: TransKey): boolean {
-		return this.Prefix === other.Prefix && this.Name === other.Name
+		return this.type === other.type && this.name === other.name
+	}
+
+	toString(): string {
+		return `${this.type}.${this.name}.name`
 	}
 }
 
-export type StateHandlerParams = {
+export type StateHandlerParams<K extends keyof RequestPermission> = {
 	lang: TransKey
 	states: BlockStateMap
+	param: Map<K, Function>
 }
 
-export type StateHandler = (args: StateHandlerParams) => (string | RawMessage | undefined)[]
+export type StateHandler<T extends keyof RequestPermission> = (
+	args: StateHandlerParams<T>
+) => (string | RawMessage | undefined)[]
 
-export type BlockTransEntry = {
+export type RequestPermission = 'getRedstonePower'
+
+export type TransEntry = {
+	RequestPermission?: RequestPermission[]
 	Type?: TransType
 	Override?: string
-	StateHandler?: StateHandler
+	StateHandler?: StateHandler<any>
 	Ref?: string
 }
-export interface IBlockTranslator {
-	[key: string]: BlockTransEntry
+
+export interface ITranslator {
+	[key: string]: TransEntry
 }

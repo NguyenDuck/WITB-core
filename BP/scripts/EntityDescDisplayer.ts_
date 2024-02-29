@@ -1,0 +1,51 @@
+import { DisplayMessage, Displayer } from './Displayer'
+import UIEnum from './UIEnum'
+
+export default class EntityDescDisplayer extends Displayer {
+	private _isChanged: boolean
+	private _entity_id: string
+	private _description: DisplayMessage
+
+	get entity_id(): string {
+		return this._entity_id
+	}
+
+	set entity_id(value: string | undefined) {
+		if (this.entity_id === value) return
+		this._entity_id = value ?? ''
+		this.isChanged = true
+	}
+
+	get description(): DisplayMessage {
+		return this._description
+	}
+
+	set description(description: DisplayMessage | undefined) {
+		if (this.description === description) return
+		this._description = description ?? ''
+		this.isChanged = true
+	}
+
+	get isChanged(): boolean {
+		return this._isChanged
+	}
+
+	private set isChanged(value: boolean) {
+		this._isChanged = value
+	}
+
+	removeDescription() {
+		this.description = ''
+		this.send()
+	}
+
+	isEmpty(): boolean {
+		return this.description === ''
+	}
+
+	send() {
+		if (!this.isChanged) return
+		this.sendTitle([UIEnum.EntityRendererChanged, `'${this.entity_id}'`], this.description)
+		this.isChanged = false
+	}
+}

@@ -1,0 +1,45 @@
+import { DisplayMessage, Displayer } from './Displayer'
+import UIEnum from './UIEnum'
+
+export default class BlockDescDisplayer extends Displayer {
+	private _isChanged: boolean
+	private _description: DisplayMessage
+
+	get description(): DisplayMessage {
+		return this._description
+	}
+
+	set description(description: DisplayMessage | undefined) {
+		if (!description) {
+			this._description = ''
+			this._isChanged = true
+			return
+		}
+		if (this.description === description) return
+		this._description = description
+		this.isChanged = true
+	}
+
+	get isChanged(): boolean {
+		return this._isChanged
+	}
+
+	private set isChanged(value: boolean) {
+		this._isChanged = value
+	}
+
+	removeDescription() {
+		this.description = ''
+		this.send()
+	}
+
+	isEmpty(): boolean {
+		return this.description === ''
+	}
+
+	send() {
+		// if (!this.isChanged) return
+		// this.sendTitle([UIEnum.GeneralViewDescription], this.description)
+		// this.isChanged = false
+	}
+}

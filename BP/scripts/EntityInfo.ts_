@@ -1,0 +1,64 @@
+import { Entity, EntityComponentTypes, Player, system } from '@minecraft/server'
+import { TransKey, TransType } from './types'
+import UIEnum from './UIEnum'
+import EntityDescDisplayer from './EntityDescDisplayer'
+import EntityNameDisplayer from './EntityNameDisplayer'
+import EntityBase from './EntityBase'
+
+export default class EntityInfo {
+	private entity?: EntityBase
+	private transKey: TransKey
+
+	private readonly displayer: {
+		name: EntityNameDisplayer
+		desc: EntityDescDisplayer
+	}
+
+	constructor(private player: Player) {
+		this.displayer = {
+			name: new EntityNameDisplayer(player),
+			desc: new EntityDescDisplayer(player),
+		}
+	}
+
+	send(entity?: Entity) {
+		if (!entity) return this.handleNonEntity()
+
+		this.entity = new EntityBase(entity)
+
+		this.transKey = new TransKey(
+			this.entity.isVanilla() ? this.entity.name : this.entity.typeId,
+			TransType.Entity
+		)
+
+		this.displayN.namespace = this.entity.namespace
+		this.displayD.description = [UIEnum.EntityRendererChanged, `'${this.entity.id}'`]
+		// UIEnum.EntityHeartAlone,
+		// 	'x' + entity.getComponent(EntityComponentTypes.Health)?.currentValue,
+
+		this.displayN.name = this.transKey
+
+		if (this.displayN.isChanged) {
+			system.runTimeout(() => this.displayN.send(), 0)
+		}
+		if (this.displayD.isChanged) {
+			system.runTimeout(() => this.displayD.send(), 1)
+		}
+	}
+
+	private handleNonEntity() {
+		if (this.entity && this.entity.typeId) {
+			this.entity = undefined
+			this.displayN.removeName()
+			this.displayD.description = ''
+		}
+	}
+
+	private get displayN() {
+		return this.displayer.name
+	}
+
+	private get displayD() {
+		return this.displayer.desc
+	}
+}

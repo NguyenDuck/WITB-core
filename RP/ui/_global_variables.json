@@ -1,11 +1,10 @@
 {
-    "$max_child_size": [
-        "100%cm",
-        "100%cm"
-    ],
-    "$font_scale": 0.8,
-    "$block_view_disabled": "|witb_block_view_disabled|",
-    "$block_name_const": "|witb_block_name|",
-    "$block_icon_const": "|witb_changed_icon|",
-    "$block_namespace_const": "|witb_block_namespace|"
+	"$max_child_size": ["100%cm", "100%cm"],
+	"$font_scale": 0.8,
+	"$prefix": "|0x",
+	"$view_disabled": "|0x000",
+	"$namespace_const": "|0x001",
+	"$description_const": "|0x002",
+	"$item_changed_const": "|0x003",
+	"$entity_changed_const": "|0x004"
 }

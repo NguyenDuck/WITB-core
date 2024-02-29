@@ -1,5 +1,6 @@
 
 .bridge
+dist/
 builds/
 
 node_modules/
