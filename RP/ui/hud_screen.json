@@ -1,8 +1,7 @@
 {
 	"inv_slot": {
 		"type": "panel",
-		"$index|default": 17,
-		"collection_index": "$index",
+		"collection_index": "$slot_index",
 		"bindings": [
 			{
 				"binding_name": "#hud_title_text_string",
@@ -27,45 +26,59 @@
 		]
 	},
 	"witb": {
-		"type": "custom",
-		"renderer": "gradient_renderer",
-		"color1": [0, 0.0039, 0.0902],
-		"color2": [0, 0.0039, 0.0902],
-		"size": ["100%cm", "100%cm"],
-		"anchor_from": "top_middle",
-		"anchor_to": "top_middle",
-		"alpha": 0.5,
+		"type": "panel",
+		"size": ["100%cm", "100%c"],
 		"controls": [
 			{
-				"renderer_container": {
+				"main_container": {
 					"type": "panel",
-					"size": [24, 24],
-					"offset": [6, 6],
+					"size": ["100%c", "100%cm"],
 					"anchor_from": "top_left",
 					"anchor_to": "top_left",
 					"controls": [
 						{
-							"item_renderer": {
-								"type": "custom",
-								"renderer": "inventory_item_renderer",
-								"size": [16, 16],
+							"renderer_container": {
+								"type": "panel",
+								"size": ["100%cm + 4px", "100%cm + 3px"],
+								"offset": [4, 3],
 								"anchor_from": "top_left",
 								"anchor_to": "top_left",
 								"controls": [
 									{
-										"stack": {
-											"type": "stack_panel",
-											"size": [0, 0],
-											"collection_name": "hotbar_items",
+										"item_renderer": {
+											"type": "custom",
+											"renderer": "inventory_item_renderer",
+											"size": [20, 20],
+											"offset": [0, 1],
+											"anchor_from": "top_left",
+											"anchor_to": "top_left",
 											"controls": [
 												{
-													"slot@hud.inv_slot": {}
+													"stack": {
+														"type": "stack_panel",
+														"size": "$zero_size",
+														"collection_name": "hotbar_items",
+														"controls": [
+															{
+																"collection_name@hud.inv_slot": {}
+															}
+														],
+														"bindings": [
+															{
+																"binding_type": "view",
+																"source_control_name": "collection_name",
+																"resolve_sibling_scope": true,
+																"source_property_name": "#item_id_aux",
+																"target_property_name": "#item_id_aux"
+															}
+														]
+													}
 												}
 											],
 											"bindings": [
 												{
 													"binding_type": "view",
-													"source_control_name": "slot",
+													"source_control_name": "stack",
 													"resolve_sibling_scope": true,
 													"source_property_name": "#item_id_aux",
 													"target_property_name": "#item_id_aux"
@@ -77,248 +90,125 @@
 								"bindings": [
 									{
 										"binding_type": "view",
-										"source_control_name": "stack",
-										"resolve_sibling_scope": true,
-										"source_property_name": "#item_id_aux",
-										"target_property_name": "#item_id_aux"
+										"source_control_name": "get_title",
+										"source_property_name": "(#text - $entity_changed_const = #text)",
+										"target_property_name": "#visible"
 									}
 								]
 							}
-						}
-						// {
-						// 	"entity_renderer": {
-						// 		"type": "custom",
-						// 		"size": [16, 16],
-						// 		"offset": [0, 12],
-						// 		"enable_scissor_test": true,
-
-						// 		"renderer": "live_horse_renderer",
-						// 		"anchor_from": "top_left",
-						// 		"anchor_to": "top_left",
-						// 		"property_bag": {
-						// 			"#entity_id": "0"
-						// 		},
-						// 		"controls": [
-						// 			{
-						// 				"heart_container": {
-						// 					"type": "panel",
-						// 					"size": ["100%cm + 6px", "100%cm + 40px + 6px"],
-						// 					"$offset|default": ["6px", "40px"],
-						// 					"anchor_from": "top_left",
-						// 					"anchor_to": "top_left",
-
-						// 					"$texture_heart_full": "textures/ui/heart/full",
-						// 					"$texture_heart_half": "textures/ui/heart/half",
-						// 					"$texture_heart_empty": "textures/ui/heart/empty",
-
-						// 					"$heart_1|default": 0,
-						// 					"$heart_2|default": 0,
-						// 					"$heart_3|default": 0,
-						// 					"$heart_4|default": 0,
-						// 					"$heart_5|default": 0,
-						// 					"$heart_6|default": 0,
-						// 					"$heart_7|default": 0,
-						// 					"$heart_8|default": 0,
-						// 					"$heart_9|default": 0,
-						// 					"$heart_10|default": 0,
-						// 					"$heart_alone|default": false,
-
-						// 					"controls": [
-						// 						{
-						// 							"heart_1": {
-						// 								"type": "image",
-						// 								"texture": "$texture_heart_full"
-						// 							}
-						// 						},
-						// 						{
-						// 							"heart_2": {
-						// 								"type": "image",
-						// 								"texture": "$texture_heart_full"
-						// 							}
-						// 						},
-						// 						{
-						// 							"heart_3": {
-						// 								"type": "image",
-						// 								"texture": "$texture_heart_full"
-						// 							}
-						// 						},
-						// 						{
-						// 							"heart_4": {
-						// 								"type": "image",
-						// 								"texture": "$texture_heart_full"
-						// 							}
-						// 						},
-						// 						{
-						// 							"heart_5": {
-						// 								"type": "image",
-						// 								"texture": "$texture_heart_full"
-						// 							}
-						// 						},
-						// 						{
-						// 							"heart_6": {
-						// 								"type": "image",
-						// 								"texture": "$texture_heart_full"
-						// 							}
-						// 						},
-						// 						{
-						// 							"heart_7": {
-						// 								"type": "image",
-						// 								"texture": "$texture_heart_full"
-						// 							}
-						// 						},
-						// 						{
-						// 							"heart_8": {
-						// 								"type": "image",
-						// 								"texture": "$texture_heart_full"
-						// 							}
-						// 						},
-						// 						{
-						// 							"heart_9": {
-						// 								"type": "image",
-						// 								"texture": "$texture_heart_full"
-						// 							}
-						// 						},
-						// 						{
-						// 							"heart_10": {
-						// 								"type": "image",
-						// 								"texture": "$texture_heart_full"
-						// 							}
-						// 						}
-						// 					],
-						// 					"bindings": [
-						// 						{
-						// 							"binding_type": "view",
-						// 							"source_control_name": "title",
-						// 							"resolve_sibling_scope": true,
-						// 							"source_property_name": "(#current - $description_const)",
-						// 							"target_property_name": "#text"
-						// 						}
-						// 					]
-						// 				}
-						// 			}
-						// 		],
-						// 		"bindings": [
-						// 			{
-						// 				"binding_type": "view",
-						// 				"source_control_name": "get_title",
-						// 				"source_property_name": "(#text - $entity_changed_const)",
-						// 				"target_property_name": "#entity_id"
-						// 			},
-						// 			{
-						// 				"binding_type": "view",
-						// 				"source_control_name": "get_title",
-						// 				"source_property_name": "not ((#text - $entity_changed_const) = #text)",
-						// 				"target_property_name": "#visible"
-						// 			}
-						// 		]
-						// 	}
-						// }
-					]
-				}
-			},
-			{
-				"block_name_container": {
-					"type": "panel",
-					"size": ["100%cm + 28px + 6px", "100%cm + 6px"],
-					"$offset|default": ["28px", "6px"],
-					"anchor_from": "top_left",
-					"anchor_to": "top_left",
-					"controls": [
+						},
 						{
-							"block_name": {
-								"type": "label",
-								"font_scale_factor": "$font_scale",
-								"text": "#text",
-								"localize": true,
-								"offset": "$offset",
-								"anchor_from": "top_left",
-								"anchor_to": "top_left",
+							"name_container": {
+								"type": "panel",
+								"size": ["100%cm + 8px", "100%c"],
+								"anchor_from": "top_right",
+								"anchor_to": "top_right",
 								"controls": [
 									{
-										"get_name": {
-											"type": "label",
-											"size": [0, 0],
-											"text": "#text",
-											"visible": false,
-											"bindings": [
+										"block_name_container": {
+											"type": "panel",
+											"size": ["100%cm + 2px", "100%cm + 4px"],
+											"$offset": [5, 4],
+											"anchor_from": "top_left",
+											"anchor_to": "top_left",
+											"controls": [
 												{
-													"binding_name": "#hud_title_text_string",
-													"binding_name_override": "#text"
-												},
-												{
-													"binding_name": "#hud_title_text_string",
-													"binding_name_override": "#text2",
-													"binding_condition": "visibility_changed"
-												},
-												{
-													"binding_type": "view",
-													"source_property_name": "(not (#text - $item_changed_const = #text) and not (#text = #text2))",
-													"target_property_name": "#visible"
+													"block_name": {
+														"type": "label",
+														"font_scale_factor": "$font_scale",
+														"text": "#text",
+														"localize": true,
+														"offset": "$offset",
+														"anchor_from": "top_left",
+														"anchor_to": "top_left",
+														"controls": [
+															{
+																"get_name": {
+																	"type": "label",
+																	"bindings": [
+																		{
+																			"binding_name": "#hud_title_text_string",
+																			"binding_name_override": "#text"
+																		},
+																		{
+																			"binding_name": "#hud_title_text_string",
+																			"binding_name_override": "#text2",
+																			"binding_condition": "visibility_changed"
+																		},
+																		{
+																			"binding_type": "view",
+																			"source_property_name": "((not (#text - $item_changed_const = #text) or not (#text - $entity_changed_const = #text)) and not (#text = #text2))",
+																			"target_property_name": "#visible"
+																		}
+																	]
+																}
+															}
+														],
+														"bindings": [
+															{
+																"binding_type": "view",
+																"source_control_name": "get_name",
+																"source_property_name": "(#text2 - $item_changed_const - $entity_changed_const)",
+																"target_property_name": "#text"
+															}
+														]
+													}
 												}
 											]
 										}
-									}
-								],
-								"bindings": [
+									},
 									{
-										"binding_type": "view",
-										"source_control_name": "get_name",
-										"source_property_name": "(#text - $item_changed_const)",
-										"target_property_name": "#text"
-									}
-								]
-							}
-						}
-					]
-				}
-			},
-			{
-				"block_namespace_container": {
-					"type": "panel",
-					"size": ["100%cm + 28px + 6px", "100%cm + 16px + 6px"],
-					"$offset|default": ["28px", "16px"],
-					"anchor_from": "top_left",
-					"anchor_to": "top_left",
-					"controls": [
-						{
-							"block_namespace": {
-								"type": "label",
-								"font_scale_factor": "$font_scale",
-								"text": "#text",
-								"localize": true,
-								"offset": "$offset",
-								"anchor_from": "top_left",
-								"anchor_to": "top_left",
-								"controls": [
-									{
-										"get_namespace": {
-											"type": "label",
-											"size": [0, 0],
-											"bindings": [
+										"block_namespace_container": {
+											"type": "panel",
+											"size": ["100%cm + 2px", "100%cm + 4px"],
+											"$offset": [5, 14],
+											"anchor_from": "top_left",
+											"anchor_to": "top_left",
+											"controls": [
 												{
-													"binding_name": "#hud_subtitle_text_string",
-													"binding_name_override": "#text"
-												},
-												{
-													"binding_name": "#hud_subtitle_text_string",
-													"binding_name_override": "#text2",
-													"binding_condition": "visibility_changed"
-												},
-												{
-													"binding_type": "view",
-													"source_property_name": "(not (#text - $namespace_const = #text) and not (#text = #text2))",
-													"target_property_name": "#visible"
+													"block_namespace": {
+														"type": "label",
+														"font_scale_factor": "$font_scale",
+														"text": "#text",
+														"localize": true,
+														"offset": "$offset",
+														"anchor_from": "top_left",
+														"anchor_to": "top_left",
+														"controls": [
+															{
+																"get_namespace": {
+																	"type": "label",
+																	"bindings": [
+																		{
+																			"binding_name": "#hud_subtitle_text_string",
+																			"binding_name_override": "#text"
+																		},
+																		{
+																			"binding_name": "#hud_subtitle_text_string",
+																			"binding_name_override": "#text2",
+																			"binding_condition": "visibility_changed"
+																		},
+																		{
+																			"binding_type": "view",
+																			"source_property_name": "(not (#text - $namespace_const = #text) and not (#text = #text2))",
+																			"target_property_name": "#visible"
+																		}
+																	]
+																}
+															}
+														],
+														"bindings": [
+															{
+																"binding_type": "view",
+																"source_control_name": "get_namespace",
+																"source_property_name": "('§o§9' + (#text2 - $namespace_const))",
+																"target_property_name": "#text"
+															}
+														]
+													}
 												}
 											]
 										}
-									}
-								],
-								"bindings": [
-									{
-										"binding_type": "view",
-										"source_control_name": "get_namespace",
-										"source_property_name": "('§o§9' + (#text2 - $namespace_const))",
-										"target_property_name": "#text"
 									}
 								]
 							}
@@ -328,34 +218,46 @@
 			},
 			{
 				"block_desc_container": {
-					"type": "label",
-					"max_size": ["100%cm + 6px + 6px", "100%cm + 26px + 6px"],
+					"type": "stack_panel",
+					"size": ["100%c + 12px", "100%cm + 3px"],
+					"offset": [6, 26],
 					"anchor_from": "top_left",
 					"anchor_to": "top_left",
-					"text": "#text",
 					"controls": [
 						{
-							"text": {
+							"block_desc": {
 								"type": "label",
 								"font_scale_factor": "$font_scale",
 								"text": "#text",
-								"anchor_from": "top_left",
-								"anchor_to": "top_left",
-								"offset": ["6px", "26px"],
+								"controls": [
+									{
+										"get_desc": {
+											"type": "label",
+											"bindings": [
+												{
+													"binding_name": "#hud_subtitle_text_string",
+													"binding_name_override": "#text"
+												},
+												{
+													"binding_name": "#hud_subtitle_text_string",
+													"binding_name_override": "#text2",
+													"binding_condition": "visibility_changed"
+												},
+												{
+													"binding_type": "view",
+													"source_property_name": "(not (#text - $description_const = #text) and not (#text = #text2))",
+													"target_property_name": "#visible"
+												}
+											]
+										}
+									}
+								],
 								"bindings": [
 									{
-										"binding_name": "#hud_subtitle_text_string",
-										"binding_name_override": "#text"
-									},
-									{
-										"binding_name": "#hud_subtitle_text_string",
-										"binding_name_override": "#text2",
-										"binding_condition": "visibility_changed"
-									},
-									{
 										"binding_type": "view",
-										"source_property_name": "(not (#text - $description_const = #text) and not (#text = #text2))",
-										"target_property_name": "#visible"
+										"source_control_name": "get_desc",
+										"source_property_name": "(#text2 - $description_const)",
+										"target_property_name": "#text"
 									}
 								]
 							}
@@ -364,15 +266,36 @@
 					"bindings": [
 						{
 							"binding_type": "view",
-							"source_control_name": "text",
-							"source_property_name": "(#text - $description_const)",
-							"target_property_name": "#text"
-						},
-						{
-							"binding_type": "view",
-							"source_control_name": "text",
-							"source_property_name": "(not (#text - $description_const = #text))",
+							"source_control_name": "get_subtitle",
+							"source_property_name": "((#text - $namespace_const) = #text)",
 							"target_property_name": "#visible"
+						}
+					]
+				}
+			}
+		]
+	},
+	"outline": {
+		"$color": [0.75, 0.75, 0.75],
+		"type": "custom",
+		"renderer": "gradient_renderer",
+		"color1": "$color",
+		"color2": "$color",
+		"alpha": 0.4,
+		"size": ["100%cm + 2px", "100%cm + 2px"],
+		"controls": [
+			{
+				"background": {
+					"$color": [0.005, 0.005, 0.025],
+					"type": "custom",
+					"renderer": "gradient_renderer",
+					"color1": "$color",
+					"color2": "$color",
+					"alpha": 0.6,
+					"size": "$max_child_size",
+					"controls": [
+						{
+							"witb@hud.witb": {}
 						}
 					]
 				}
@@ -386,12 +309,15 @@
 				"operation": "insert_front",
 				"value": [
 					{
-						"witb@hud.witb": {
+						"witb@hud.outline": {
+							"offset": [0, 20],
+							"anchor_from": "$position",
+							"anchor_to": "$position",
 							"bindings": [
 								{
 									"binding_type": "view",
-									"source_control_name": "_title1",
-									"source_property_name": "(not (#is_disabled_0))",
+									"source_control_name": "get_title",
+									"source_property_name": "((#text - $view_disabled) = #text)",
 									"target_property_name": "#visible"
 								}
 							]
@@ -400,7 +326,7 @@
 					{
 						"get_title": {
 							"type": "label",
-							"size": [0, 0],
+							"size": "$zero_size",
 							"anchor_from": "bottom_left",
 							"anchor_to": "bottom_left",
 							"text": "#text",
@@ -408,7 +334,7 @@
 								{
 									"_title": {
 										"type": "label",
-										"size": [0, 0],
+										"size": "$zero_size",
 										"bindings": [
 											{
 												"binding_name": "#hud_title_text_string",
@@ -442,7 +368,7 @@
 					{
 						"get_subtitle": {
 							"type": "label",
-							"size": [0, 0],
+							"size": "$zero_size",
 							"anchor_from": "bottom_left",
 							"anchor_to": "bottom_left",
 							"text": "#text",
@@ -450,7 +376,7 @@
 								{
 									"_subtitle": {
 										"type": "label",
-										"size": [0, 0],
+										"size": "$zero_size",
 										"bindings": [
 											{
 												"binding_name": "#hud_subtitle_text_string",
@@ -477,452 +403,6 @@
 									"resolve_sibling_scope": true,
 									"source_property_name": "#text2",
 									"target_property_name": "#text"
-								}
-							]
-						}
-					},
-					{
-						"_title1": {
-							"type": "label",
-							"anchor_from": "top_left",
-							"anchor_to": "top_left",
-							"$color1": [0.0902, 0.0902, 0.0902],
-							"$color2": [0.3843, 1, 0.1961],
-							"controls": [
-								{
-									"is_disabled_0": {
-										"type": "custom",
-										"renderer": "gradient_renderer",
-										"size": [5, 5],
-										"offset": [0, -10],
-										"color1": "$color2",
-										"color2": "$color2",
-										"bindings": [
-											{
-												"binding_type": "view",
-												"source_control_name": "_title1",
-												"source_property_name": "#is_disabled_0",
-												"target_property_name": "#visible"
-											}
-										]
-									}
-								},
-								{
-									"is_namespace_0": {
-										"type": "custom",
-										"renderer": "gradient_renderer",
-										"size": [5, 5],
-										"offset": [10, -10],
-										"color1": "$color2",
-										"color2": "$color2",
-										"bindings": [
-											{
-												"binding_type": "view",
-												"source_control_name": "_title1",
-												"source_property_name": "#is_namespace_0",
-												"target_property_name": "#visible"
-											}
-										]
-									}
-								},
-								{
-									"is_description_0": {
-										"type": "custom",
-										"renderer": "gradient_renderer",
-										"size": [5, 5],
-										"offset": [20, -10],
-										"color1": "$color2",
-										"color2": "$color2",
-										"bindings": [
-											{
-												"binding_type": "view",
-												"source_control_name": "_title1",
-												"source_property_name": "#is_description_0",
-												"target_property_name": "#visible"
-											}
-										]
-									}
-								},
-								{
-									"is_item_changed_0": {
-										"type": "custom",
-										"renderer": "gradient_renderer",
-										"size": [5, 5],
-										"offset": [30, -10],
-										"color1": "$color2",
-										"color2": "$color2",
-										"bindings": [
-											{
-												"binding_type": "view",
-												"source_control_name": "_title1",
-												"source_property_name": "#is_item_changed_0",
-												"target_property_name": "#visible"
-											}
-										]
-									}
-								},
-								{
-									"is_entity_changed_0": {
-										"type": "custom",
-										"renderer": "gradient_renderer",
-										"size": [5, 5],
-										"offset": [40, -10],
-										"color1": "$color2",
-										"color2": "$color2",
-										"bindings": [
-											{
-												"binding_type": "view",
-												"source_control_name": "_title1",
-												"source_property_name": "#is_entity_changed_0",
-												"target_property_name": "#visible"
-											}
-										]
-									}
-								},
-								{
-									"is_disabled_0_1": {
-										"type": "custom",
-										"renderer": "gradient_renderer",
-										"size": [5, 5],
-										"offset": [0, -10],
-										"color1": "$color1",
-										"color2": "$color1",
-										"bindings": [
-											{
-												"binding_type": "view",
-												"source_control_name": "_title1",
-												"source_property_name": "(not #is_disabled_0)",
-												"target_property_name": "#visible"
-											}
-										]
-									}
-								},
-								{
-									"is_namespace_0_1": {
-										"type": "custom",
-										"renderer": "gradient_renderer",
-										"size": [5, 5],
-										"offset": [10, -10],
-										"color1": "$color1",
-										"color2": "$color1",
-										"bindings": [
-											{
-												"binding_type": "view",
-												"source_control_name": "_title1",
-												"source_property_name": "(not #is_namespace_0)",
-												"target_property_name": "#visible"
-											}
-										]
-									}
-								},
-								{
-									"is_description_0_1": {
-										"type": "custom",
-										"renderer": "gradient_renderer",
-										"size": [5, 5],
-										"offset": [20, -10],
-										"color1": "$color1",
-										"color2": "$color1",
-										"bindings": [
-											{
-												"binding_type": "view",
-												"source_control_name": "_title1",
-												"source_property_name": "(not #is_description_0)",
-												"target_property_name": "#visible"
-											}
-										]
-									}
-								},
-								{
-									"is_item_changed_0_1": {
-										"type": "custom",
-										"renderer": "gradient_renderer",
-										"size": [5, 5],
-										"offset": [30, -10],
-										"color1": "$color1",
-										"color2": "$color1",
-										"bindings": [
-											{
-												"binding_type": "view",
-												"source_control_name": "_title1",
-												"source_property_name": "(not #is_item_changed_0)",
-												"target_property_name": "#visible"
-											}
-										]
-									}
-								},
-								{
-									"is_entity_changed_0_1": {
-										"type": "custom",
-										"renderer": "gradient_renderer",
-										"size": [5, 5],
-										"offset": [40, -10],
-										"color1": "$color1",
-										"color2": "$color1",
-										"bindings": [
-											{
-												"binding_type": "view",
-												"source_control_name": "_title1",
-												"source_property_name": "(not #is_entity_changed_0)",
-												"target_property_name": "#visible"
-											}
-										]
-									}
-								}
-							],
-							"bindings": [
-								{
-									"binding_type": "view",
-									"source_control_name": "get_title",
-									"source_property_name": "(not (#text - $view_disabled = #text))",
-									"target_property_name": "#is_disabled_0"
-								},
-								{
-									"binding_type": "view",
-									"source_control_name": "get_title",
-									"source_property_name": "(not (#text - $namespace_const = #text))",
-									"target_property_name": "#is_namespace_0"
-								},
-								{
-									"binding_type": "view",
-									"source_control_name": "get_title",
-									"source_property_name": "(not (#text - $description_const = #text))",
-									"target_property_name": "#is_description_0"
-								},
-								{
-									"binding_type": "view",
-									"source_control_name": "get_title",
-									"source_property_name": "(not (#text - $item_changed_const = #text))",
-									"target_property_name": "#is_item_changed_0"
-								},
-								{
-									"binding_type": "view",
-									"source_control_name": "get_title",
-									"source_property_name": "(not (#text - $entity_changed_const = #text))",
-									"target_property_name": "#is_entity_changed_0"
-								}
-							]
-						}
-					},
-					{
-						"_subtitle1": {
-							"type": "label",
-							"anchor_from": "top_left",
-							"anchor_to": "top_left",
-							"$color1": [0.0902, 0.0902, 0.0902],
-							"$color2": [0.3843, 1, 0.1961],
-							"controls": [
-								{
-									"is_disabled_1": {
-										"type": "custom",
-										"renderer": "gradient_renderer",
-										"size": [5, 5],
-										"offset": [0, 0],
-										"color1": "$color2",
-										"color2": "$color2",
-										"bindings": [
-											{
-												"binding_type": "view",
-												"source_control_name": "_subtitle1",
-												"source_property_name": "#is_disabled_1",
-												"target_property_name": "#visible"
-											}
-										]
-									}
-								},
-								{
-									"is_namespace_1": {
-										"type": "custom",
-										"renderer": "gradient_renderer",
-										"size": [5, 5],
-										"offset": [10, 0],
-										"color1": "$color2",
-										"color2": "$color2",
-										"bindings": [
-											{
-												"binding_type": "view",
-												"source_control_name": "_subtitle1",
-												"source_property_name": "#is_namespace_1",
-												"target_property_name": "#visible"
-											}
-										]
-									}
-								},
-								{
-									"is_description_1": {
-										"type": "custom",
-										"renderer": "gradient_renderer",
-										"size": [5, 5],
-										"offset": [20, 0],
-										"color1": "$color2",
-										"color2": "$color2",
-										"bindings": [
-											{
-												"binding_type": "view",
-												"source_control_name": "_subtitle1",
-												"source_property_name": "#is_description_1",
-												"target_property_name": "#visible"
-											}
-										]
-									}
-								},
-								{
-									"is_item_changed_1": {
-										"type": "custom",
-										"renderer": "gradient_renderer",
-										"size": [5, 5],
-										"offset": [30, 0],
-										"color1": "$color2",
-										"color2": "$color2",
-										"bindings": [
-											{
-												"binding_type": "view",
-												"source_control_name": "_subtitle1",
-												"source_property_name": "#is_item_changed_1",
-												"target_property_name": "#visible"
-											}
-										]
-									}
-								},
-								{
-									"is_entity_changed_1": {
-										"type": "custom",
-										"renderer": "gradient_renderer",
-										"size": [5, 5],
-										"offset": [40, 0],
-										"color1": "$color2",
-										"color2": "$color2",
-										"bindings": [
-											{
-												"binding_type": "view",
-												"source_control_name": "_subtitle1",
-												"source_property_name": "#is_entity_changed_1",
-												"target_property_name": "#visible"
-											}
-										]
-									}
-								},
-								{
-									"is_disabled_1_1": {
-										"type": "custom",
-										"renderer": "gradient_renderer",
-										"size": [5, 5],
-										"offset": [0, 0],
-										"color1": "$color1",
-										"color2": "$color1",
-										"bindings": [
-											{
-												"binding_type": "view",
-												"source_control_name": "_subtitle1",
-												"source_property_name": "(not #is_disabled_1)",
-												"target_property_name": "#visible"
-											}
-										]
-									}
-								},
-								{
-									"is_namespace_1_1": {
-										"type": "custom",
-										"renderer": "gradient_renderer",
-										"size": [5, 5],
-										"offset": [10, 0],
-										"color1": "$color1",
-										"color2": "$color1",
-										"bindings": [
-											{
-												"binding_type": "view",
-												"source_control_name": "_subtitle1",
-												"source_property_name": "(not #is_namespace_1)",
-												"target_property_name": "#visible"
-											}
-										]
-									}
-								},
-								{
-									"is_description_1_1": {
-										"type": "custom",
-										"renderer": "gradient_renderer",
-										"size": [5, 5],
-										"offset": [20, 0],
-										"color1": "$color1",
-										"color2": "$color1",
-										"bindings": [
-											{
-												"binding_type": "view",
-												"source_control_name": "_subtitle1",
-												"source_property_name": "(not #is_description_1)",
-												"target_property_name": "#visible"
-											}
-										]
-									}
-								},
-								{
-									"is_item_changed_1_1": {
-										"type": "custom",
-										"renderer": "gradient_renderer",
-										"size": [5, 5],
-										"offset": [30, 0],
-										"color1": "$color1",
-										"color2": "$color1",
-										"bindings": [
-											{
-												"binding_type": "view",
-												"source_control_name": "_subtitle1",
-												"source_property_name": "(not #is_item_changed_1)",
-												"target_property_name": "#visible"
-											}
-										]
-									}
-								},
-								{
-									"is_entity_changed_1_1": {
-										"type": "custom",
-										"renderer": "gradient_renderer",
-										"size": [5, 5],
-										"offset": [40, 0],
-										"color1": "$color1",
-										"color2": "$color1",
-										"bindings": [
-											{
-												"binding_type": "view",
-												"source_control_name": "_subtitle1",
-												"source_property_name": "(not #is_entity_changed_1)",
-												"target_property_name": "#visible"
-											}
-										]
-									}
-								}
-							],
-							"bindings": [
-								{
-									"binding_type": "view",
-									"source_control_name": "get_subtitle",
-									"source_property_name": "(not (#text - $view_disabled = #text))",
-									"target_property_name": "#is_disabled_1"
-								},
-								{
-									"binding_type": "view",
-									"source_control_name": "get_subtitle",
-									"source_property_name": "(not (#text - $namespace_const = #text))",
-									"target_property_name": "#is_namespace_1"
-								},
-								{
-									"binding_type": "view",
-									"source_control_name": "get_subtitle",
-									"source_property_name": "(not (#text - $description_const = #text))",
-									"target_property_name": "#is_description_1"
-								},
-								{
-									"binding_type": "view",
-									"source_control_name": "get_subtitle",
-									"source_property_name": "(not (#text - $item_changed_const = #text))",
-									"target_property_name": "#is_item_changed_1"
-								},
-								{
-									"binding_type": "view",
-									"source_control_name": "get_title",
-									"source_property_name": "(not (#text - $entity_changed_const = #text))",
-									"target_property_name": "#is_entity_changed_1"
 								}
 							]
 						}

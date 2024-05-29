@@ -1,86 +1,106 @@
-import {
-	ContainerSlot,
-	ItemStack,
-	Player,
-	RawMessage,
-	TitleDisplayOptions,
-	system,
-} from '@minecraft/server'
+import { ContainerSlot, ItemStack, Player, RawMessage, TitleDisplayOptions, system } from '@minecraft/server'
 import UIEnum, { encodeToHex } from './UIEnum'
+import { TKey } from './types'
+import { isStrictMessageEquals } from './utils'
 
-export type DisplayMessage = string | RawMessage | UIEnum | (string | RawMessage | UIEnum)[]
-type StrictMessage = string | RawMessage | (string | RawMessage)[]
+export type DisplayMessage = string | RawMessage | UIEnum | TKey | (string | RawMessage | UIEnum | TKey)[]
+export function toStrictMessage(message: DisplayMessage): StrictMessage {
+	if (typeof message === 'number') return encodeToHex(message)
+	else if (Array.isArray(message)) return <StrictMessage>message.map(toStrictMessage)
+	else if (message instanceof TKey) return message.toString()
+	return message
+}
+export type StrictMessage = string | RawMessage | (string | RawMessage)[]
 
-type DisplayQueue = {
-	title: StrictMessage
+type DisplayEntry = {
+	title?: StrictMessage
 	subtitle?: StrictMessage
-	oldItem?: ItemStack
-	newItem?: ItemStack
-	runNumber?: number
+	oldItem?: ItemStack | null
+	newItem?: ItemStack | null
 }
 
 export default class Displayer {
-	private queue: DisplayQueue[] = []
+	private currentDisplay: DisplayEntry = {
+		title: undefined,
+		subtitle: undefined,
+		oldItem: null,
+		newItem: null,
+	}
 
-	private lastTitleMessage?: StrictMessage = ''
-	private lastSubtitleMessage?: StrictMessage = ''
+	private slot: ContainerSlot
+
+	private lastTitleMessage?: StrictMessage
+	private lastSubtitleMessage?: StrictMessage
 
 	constructor(private player: Player) {
 		const n = system.runInterval(() => {
 			if (!this.player.isValid()) system.clearRun(n)
 			this.send()
-		}, 1)
-	}
-
-	private isDuplicated(msg: DisplayMessage) {
-		return (
-			this.lastTitleMessage === <StrictMessage>msg ||
-			this.lastSubtitleMessage === <StrictMessage>msg
-		)
-	}
-
-	get empty() {
-		return this.queue.length === 0
-	}
-
-	clearQueue() {
-		this.queue = []
-	}
-
-	setTranslation({
-		title,
-		itemStack,
-		subtitle,
-	}: {
-		title: DisplayMessage
-		itemStack?: ItemStack
-		subtitle?: DisplayMessage
-	}) {
-		if (this.isDuplicated(title)) return
-		this.queue.clear()
-		this.queue.enqueue({
-			title: <StrictMessage>title,
-			subtitle: <StrictMessage>subtitle,
-			oldItem: itemStack,
-			newItem: itemStack,
 		})
 	}
 
-	addTranslation(title: DisplayMessage, subtitle?: DisplayMessage) {
-		if (this.isDuplicated(title)) return
-		this.queue.enqueue({
-			title: <StrictMessage>title,
-			subtitle: <StrictMessage>subtitle,
-		})
+	hasTitle() {
+		return this.currentDisplay.title !== undefined
+	}
+
+	setTitle(title?: DisplayMessage) {
+		if (!title) {
+			this.currentDisplay.title = undefined
+			return false
+		}
+		const formatedTitle = toStrictMessage(title)
+		if (isStrictMessageEquals(this.lastTitleMessage, formatedTitle)) return false
+		this.lastTitleMessage = formatedTitle
+		this.currentDisplay.title = formatedTitle
+		return true
+	}
+
+	hasSubtitle() {
+		return this.currentDisplay.subtitle !== undefined
+	}
+
+	setSubtitle(subtitle?: DisplayMessage) {
+		if (!subtitle) {
+			this.currentDisplay.subtitle = undefined
+			return false
+		}
+		const formatedSubtitle = toStrictMessage(subtitle)
+		if (isStrictMessageEquals(this.lastSubtitleMessage, formatedSubtitle)) return false
+		this.lastSubtitleMessage = formatedSubtitle
+		this.currentDisplay.subtitle = formatedSubtitle
+		return true
+	}
+
+	getOldItem() {
+		return this.currentDisplay.oldItem
+	}
+
+	setOldItem(item?: ItemStack | null) {
+		if (this.currentDisplay.oldItem === item) return
+		this.currentDisplay.oldItem = item
+	}
+
+	setNewItem(item?: ItemStack) {
+		if (this.currentDisplay.newItem === item) return
+		this.currentDisplay.newItem = item
+	}
+
+	setSlot(slot: ContainerSlot) {
+		if (this.slot && this.slot.isValid()) return
+		this.slot = slot
 	}
 
 	private send() {
-		if (!this.player.onScreenDisplay.isValid()) return
+		if (!this.player?.onScreenDisplay.isValid()) return
 
-		const value = this.queue.dequeue()
-		const { title, subtitle, oldItem, newItem } = value
+		const { title, subtitle, newItem, oldItem } = this.currentDisplay
 
-		if (!value) return
+		if (!title && !subtitle) {
+			if (oldItem !== null) {
+				this.slot.setItem(oldItem)
+				this.setOldItem(null)
+			}
+		}
 
 		let settings: TitleDisplayOptions = {
 			fadeInDuration: 0,
@@ -88,30 +108,19 @@ export default class Displayer {
 			stayDuration: 0,
 		}
 
-		let finalTitle: StrictMessage
-		let finalSubtitle: StrictMessage
+		if (title) {
+			if (newItem !== null) this.slot.setItem(newItem)
 
-		if (typeof title === 'number') finalTitle = encodeToHex(title)
-		if (Array.isArray(title))
-			finalTitle = title.map(v => (typeof v === 'number' ? encodeToHex(v) : v))
-
-		if (typeof subtitle === 'number') finalSubtitle = encodeToHex(subtitle)
-		if (Array.isArray(subtitle))
-			finalSubtitle = subtitle.map(v => (typeof v === 'number' ? encodeToHex(v) : v))
-
-		if (title && title !== this.lastTitleMessage) {
-			if (newItem) {
-				title.i[0].setItem(title.i[2])
-				system.runTimeout(() => {
-					if (!this.queue.length) title.i[0].setItem(title.i[1])
-				}, 1)
+			if (subtitle) {
+				settings.subtitle = subtitle
+				this.setSubtitle(undefined)
 			}
-			this.lastTitleMessage = finalTitle
-			if (subtitle && subtitle !== this.lastSubtitleMessage) {
-				settings.subtitle = finalSubtitle
-				this.lastSubtitleMessage = finalSubtitle
-			}
-			this.player.onScreenDisplay.setTitle(finalTitle, settings)
+			this.player.onScreenDisplay.setTitle(title, settings)
+			this.setTitle(undefined)
+		} else if (subtitle) {
+			settings.subtitle = subtitle
+			this.player.onScreenDisplay.setTitle(this.lastTitleMessage, settings)
+			this.setSubtitle(undefined)
 		}
 	}
 }

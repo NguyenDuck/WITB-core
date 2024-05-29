@@ -2,44 +2,42 @@ import { RawMessage } from '@minecraft/server'
 
 export type BlockStateMap = Map<string, string | number | boolean>
 
-export enum TransType {
+export enum TType {
 	Block = 'tile',
 	Item = 'item',
 	Entity = 'entity',
 }
 
-export class TransKey {
-	constructor(public name: string, public type: TransType = TransType.Block) {}
-
-	equals(other: TransKey): boolean {
-		return this.type === other.type && this.name === other.name
-	}
+export class TKey {
+	constructor(public name: string, public type: TType = TType.Block) {}
 
 	toString(): string {
-		return `${this.type}.${this.name}.name`
+		return `${this.type}.${this.name}${this.name.includes(':') && this.type == TType.Item ? '' : '.name'}`
 	}
 }
 
-export type StateHandlerParams<K extends keyof RequestPermission> = {
-	lang: TransKey
-	states: BlockStateMap
-	param: Map<K, Function>
-}
+export type Message = (string | RawMessage | undefined)[] | string | RawMessage
 
-export type StateHandler<T extends keyof RequestPermission> = (
-	args: StateHandlerParams<T>
-) => (string | RawMessage | undefined)[]
+export type Handler = (args: HandlerParam) => Message
 
-export type RequestPermission = 'getRedstonePower'
+type DefaultPP = { prefix: string; name: string; id: string }
 
-export type TransEntry = {
-	RequestPermission?: RequestPermission[]
-	Type?: TransType
-	Override?: string
-	StateHandler?: StateHandler<any>
-	Ref?: string
-}
+type StatePP = { state?: (name: string) => string | number | boolean | undefined }
+
+type RedstonePP = { redstonePower?: number }
+
+export type HandlerParam = DefaultPP & StatePP & RedstonePP
+
+export type Permission = 'redstonePower' | 'state'
+
+export type NameTypeEntry = { n?: string; t?: TType }
+
+export type HandlerEntry = (Permission[] | Handler | NameTypeEntry)[]
+
+export type RefEntry = { r: string }
+
+export type TEntry = HandlerEntry | RefEntry | NameTypeEntry | {}
 
 export interface ITranslator {
-	[key: string]: TransEntry
+	[key: string]: TEntry | string
 }

@@ -3,9 +3,7 @@
 	"version": "1.0.0",
 	"main": "main.ts",
 	"scripts": {
-		"build": "ts-node main --build",
-		"dev": "ts-node main --watch",
-		"export": "NODE_ENV=production ts-node main --export"
+		"watch": "cd BP/scripts/ && esbuild main.ts --bundle --outdir=build --external:@minecraft/server --platform=neutral --main-fields=main --watch"
 	},
 	"repository": {
 		"type": "git",
@@ -14,6 +12,7 @@
 	"author": "NguyenDuck",
 	"dependencies": {
 		"@commander-js/extra-typings": "^12.0.0",
+		"@minecraft/math": "^1.3.5",
 		"@minecraft/vanilla-data": "^1.20.60",
 		"@swc/core": "^1.4.0",
 		"@types/archiver": "^6.0.2",
@@ -23,7 +22,7 @@
 		"minify-ts": "^1.1.5"
 	},
 	"devDependencies": {
-		"@minecraft/server": "^1.9.0-beta.1.20.60-stable",
+		"@minecraft/server": "^1.13.0-beta.1.21.10-preview.20",
 		"@types/node": "^20.6.2",
 		"dotenv": "^16.4.1",
 		"esbuild-plugin-env": "^1.0.8",

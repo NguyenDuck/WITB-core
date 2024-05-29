@@ -1,64 +1,62 @@
-import { ITranslator, TransType } from '../../types'
+import { ITranslator, TType } from '../../types'
 import { upperCaseWhenUnderscore } from '../../utils'
 
 export default {
 	// Wood
-	'wood': {
-		StateHandler: v => {
-			let s = v.states.get('wood_type')
-			let s2 = v.states.get('stripped_bit')
-			return [`${v.lang.name}.${s2 ? 'stripped.' : ''}${s}`]
+	'^(?!stripped).+_wood': [
+		({ name }) => {
+			let s = name.split('_')
+			s.pop()
+			let j = s.join('_')
+			return ['oak', 'spruce', 'birch', 'jungle', 'acacia', 'dark_oak'].includes(j) ? `wood.${j}` : undefined
 		},
-	},
+	],
+	'^(stripped).+_wood': [
+		({ name }) => {
+			let s = name.split('_')
+			s.shift()
+			s.pop()
+			let j = s.join('_')
+			return ['oak', 'spruce', 'birch', 'jungle', 'acacia'].includes(j) ? `wood.stripped.${j}` : undefined
+		},
+	],
+	'stripped_dark_oak_wood': 'wood.stripped.dark_oak',
 	// Planks
-	'dark_oak_planks': {
-		Override: 'planks.big_oak',
-	},
-	'*_planks': {
-		StateHandler: v => {
-			let a = v.lang.name.split('_')
-			return ['oak', 'birch', 'spruce', 'jungle', 'acacia'].includes(a[0])
-				? [`${a.pop()}.${a.join('_')}`]
-				: []
+	'.+_planks': [
+		({ name }) => {
+			let a = name.split('_')
+			return [
+				['oak', 'birch', 'spruce', 'jungle', 'acacia'].includes(a[0]) ? `${a.pop()}.${a.join('_')}` : undefined,
+			]
 		},
-	},
+	],
+	'dark_oak_planks': 'planks.big_oak',
 	// Log
-	'*_log': {
-		StateHandler: v => {
-			let a = v.lang.name.split('_')
+	'.+_log': [
+		({ name }) => {
+			let a = name.split('_')
 			return ['oak', 'birch', 'spruce', 'jungle', 'acacia', 'dark'].includes(a[0])
-				? [`${a.pop()}.${a.includes('dark') ? 'big_oak' : a.join('_')}`]
-				: []
+				? `${a.pop()}.${a.includes('dark') ? 'big_oak' : a.join('_')}`
+				: undefined
 		},
-	},
+	],
 	// Fences
-	'oak_fence': {
-		Override: 'fence',
-	},
-	'spruce_fence': {
-		Override: 'spruceFence',
-	},
-	'birch_fence': {
-		Override: 'birchFence',
-	},
-	'jungle_fence': {
-		Override: 'jungleFence',
-	},
-	'acacia_fence': {
-		Override: 'acaciaFence',
-	},
-	'dark_oak_fence': {
-		Override: 'darkOakFence',
-	},
-	'*_fence_gate': {
-		StateHandler: v => [upperCaseWhenUnderscore(v.lang.name)],
-	},
+	'.+_fence$': [
+		({ name }) =>
+			['oak', 'birch', 'jungle', 'spruce', 'acacia', 'dark'].includes(name.split('_')[0])
+				? upperCaseWhenUnderscore(name)
+				: undefined,
+	],
+	'oak_fence': 'fence',
 	// Slab
-	'wooden_slab': {
-		Ref: 'planks',
+	'^(oak|spruce|birch|jungle|acacia)_slab$': [({ name }) => `wooden_slab.${name.split('_')[0]}`],
+	'dark_oak_slab': 'wooden_slab.big_oak',
+	'^(oak|spruce|birch|jungle|acacia)_double_slab$': {
+		r: '^(oak|spruce|birch|jungle|acacia)_slab$',
+	},
+	'dark_oak_double_slab': {
+		r: 'dark_oak_slab',
 	},
 	// Door
-	'*_door': {
-		Type: TransType.Item,
-	},
+	'.+_door': { t: TType.Item },
 } as ITranslator

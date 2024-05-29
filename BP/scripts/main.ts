@@ -1,8 +1,9 @@
-import { world, system, Block, Entity, Vector } from '@minecraft/server'
+import { world, system, Block, Entity } from '@minecraft/server'
 import Settings from './Settings'
 import Displayer from './Displayer'
 import TranslationService from './translator/Service'
 import BlockTranslator from './translator/block/BlockTranslator'
+import { Vector3Utils } from '@minecraft/math'
 
 type BlockDistance = {
 	value?: Block
@@ -14,35 +15,53 @@ type EntityDistance = {
 }
 type DistanceSorter = BlockDistance | EntityDistance
 
-world.afterEvents.playerSpawn.subscribe(({ player }) => {
+function sortFn(a: DistanceSorter, b: DistanceSorter) {
+	return a.distance - b.distance
+}
+
+world.afterEvents.playerSpawn.subscribe(({ player, initialSpawn }) => {
 	const displayer = new Displayer(player)
 
-	const n = system.runInterval(() => {
-		try {
-			if (!player.isValid()) return system.clearRun(n)
+	const oldDir = player.getViewDirection()
 
-			const distance: DistanceSorter[] = []
+	function timing() {
+		const n = system.runInterval(() => {
+			try {
+				if (!player.isValid()) return system.clearRun(n)
 
-			const block = player.getBlockFromViewDirection(Settings.range)
-			const raycast = player
-				.getEntitiesFromViewDirection(Settings.range)
-				.sort((a, b) => a.distance - b.distance)
-				.shift()
+				const distance: DistanceSorter[] = []
 
-			if (block)
-				distance.push({
-					value: block.block,
-					distance: Vector.distance(player.getHeadLocation(), block.block.location),
+				const block = player.getBlockFromViewDirection(Settings.range)
+				const raycast = player.getEntitiesFromViewDirection(Settings.range).sort(sortFn).shift()
+
+				if (block)
+					distance.push({
+						value: block.block,
+						distance: Vector3Utils.distance(player.getHeadLocation(), block.block.center()),
+					})
+				if (raycast) distance.push({ value: raycast.entity, distance: raycast.distance })
+
+				distance.sort(sortFn)
+
+				TranslationService.handle(player, displayer, distance.shift()?.value)
+			} catch (e) {
+				if (Settings.debugMode) console.warn(e, e.stack)
+			}
+		})
+	}
+
+	if (initialSpawn) {
+		TranslationService.handle(player, displayer, undefined)
+		const nu = system.runInterval(() => {
+			const r = Vector3Utils.subtract(oldDir, player.getViewDirection())
+			if (r.x !== 0 || r.y !== 0 || r.z !== 0) {
+				system.run(() => {
+					system.clearRun(nu)
+					timing()
 				})
-			if (raycast) distance.push({ value: raycast.entity, distance: raycast.distance })
-
-			distance.sort((a, b) => a.distance - b.distance)
-
-			TranslationService.handle(player, displayer, distance.pop()?.value)
-		} catch (e) {
-			if (Settings.debugMode) console.warn(e, e.stack)
-		}
-	}, Settings.poseInterval)
+			}
+		}, 1)
+	} else timing()
 })
 
 Object.entries(BlockTranslator).forEach(([name, value]) => {

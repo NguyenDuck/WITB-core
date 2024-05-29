@@ -1,46 +1,74 @@
 {
-	"type": "minecraftBedrock",
-	"name": "WITB - What Is This Block",
-	"namespace": "witb",
-	"authors": [
-		"NguyenDuck, Asaki Zuki"
-	],
-	"targetVersion": "1.20.30",
-	"description": "Show infomation what block you seeing",
-	"experimentalGameplay": {
-		"holidayCreatorFeatures": true,
-		"creationOfCustomBiomes": false,
-		"upcomingCreatorFeatures": false,
-		"enableGameTestFramework": true,
-		"experimentalMolangFeatures": false,
-		"educationEdition": false
-	},
-	"bdsProject": true,
+	"$schema": "https://raw.githubusercontent.com/Bedrock-OSS/regolith-schemas/main/config/v1.2.json",
+	"author": "NguyenDuck",
+	"name": "WITB",
 	"packs": {
 		"behaviorPack": "./BP",
 		"resourcePack": "./RP"
 	},
-	"worlds": [
-		"./worlds/*"
-	],
-	"compiler": {
-		"plugins": [
-			"generatorScripts",
-			"typeScript",
-			"entityIdentifierAlias",
-			"customEntityComponents",
-			"customItemComponents",
-			"customBlockComponents",
-			"customCommands",
-			"moLang",
-			"formatVersionCorrection",
-			[
-				"simpleRewrite",
-				{
-					"packName": "WITB - What Is This Block"
-				}
-			]
-		]
-	},
-	"bridge": {}
+	"regolith": {
+		"dataPath": "./data",
+		"filterDefinitions": {
+			"esbuild_executor": {
+				"url": "github.com/MajestikButter/Regolith-Filters",
+				"version": "6fa6a6a9298f7d033d0f2e421edfb33292807aae"
+			},
+			"minimize": {
+				"url": "github.com/cda94581/regolith-filters",
+				"version": "0.0.4"
+			}
+		},
+		"profiles": {
+			"default": {
+				"export": {
+					"readOnly": false,
+					"target": "preview"
+				},
+				"filters": [
+					{
+						"filter": "minimize"
+					},
+					{
+						"filter": "esbuild_executor",
+						"settings": {
+							"buildOptions": {
+								"bundle": true,
+								"entryPoints": ["BP/scripts/main.ts"],
+								"external": ["@minecraft/server", "@minecraft/server-ui", "@minecraft/server-gametest"],
+								"mainFields": ["main", "module"],
+								"minify": false,
+								"outfile": "BP/scripts/main.js",
+								"platform": "neutral"
+							}
+						}
+					}
+				]
+			},
+			"export": {
+				"export": {
+					"readOnly": false,
+					"target": "local"
+				},
+				"filters": [
+					{
+						"filter": "minimize"
+					},
+					{
+						"filter": "esbuild_executor",
+						"settings": {
+							"buildOptions": {
+								"bundle": true,
+								"entryPoints": ["BP/scripts/main.ts"],
+								"external": ["@minecraft/server", "@minecraft/server-ui", "@minecraft/server-gametest"],
+								"mainFields": ["main", "module"],
+								"minify": true,
+								"outfile": "BP/scripts/main.js",
+								"platform": "neutral"
+							}
+						}
+					}
+				]
+			}
+		}
+	}
 }

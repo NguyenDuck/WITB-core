@@ -1,6 +1,9 @@
 {
+	"$position": "top_right",
+	"$slot_index": 17,
 	"$max_child_size": ["100%cm", "100%cm"],
-	"$font_scale": 0.8,
+	"$zero_size": [0, 0],
+	"$font_scale": 1.0,
 	"$prefix": "|0x",
 	"$view_disabled": "|0x000",
 	"$namespace_const": "|0x001",

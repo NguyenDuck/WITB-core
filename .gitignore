@@ -5,3 +5,6 @@ builds/
 
 node_modules/
 **/*.js
+
+/build
+/.regolith
