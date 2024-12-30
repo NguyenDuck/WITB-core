@@ -1,32 +1,24 @@
 {
-	"name": "what-is-this-block",
-	"version": "1.0.0",
-	"main": "main.ts",
-	"scripts": {
-		"watch": "cd BP/scripts/ && esbuild main.ts --bundle --outdir=build --external:@minecraft/server --platform=neutral --main-fields=main --watch"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+ssh://git@github.com/NguyenDuck/WhatIsThisBlock.git"
-	},
-	"author": "NguyenDuck",
-	"dependencies": {
-		"@commander-js/extra-typings": "^12.0.0",
-		"@minecraft/math": "^1.3.5",
-		"@minecraft/vanilla-data": "^1.20.60",
-		"@swc/core": "^1.4.0",
-		"@types/archiver": "^6.0.2",
-		"archiver": "^6.0.1",
-		"commander": "^12.0.0",
-		"esbuild": "^0.20.0",
-		"minify-ts": "^1.1.5"
-	},
-	"devDependencies": {
-		"@minecraft/server": "^1.13.0-beta.1.21.10-preview.20",
-		"@types/node": "^20.6.2",
-		"dotenv": "^16.4.1",
-		"esbuild-plugin-env": "^1.0.8",
-		"esbuild-plugin-external-package": "^1.0.0",
-		"esbuild-plugin-global-api": "^0.2.3"
-	}
+  "name": "what-is-this-block",
+  "version": "1.0.0",
+  "main": "main.ts",
+  "scripts": {
+    "watch": "cd BP/scripts/ && esbuild main.ts --bundle --outdir=build --external:@minecraft/server --platform=neutral --main-fields=main --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/NguyenDuck/WhatIsThisBlock.git"
+  },
+  "author": "NguyenDuck",
+  "dependencies": {
+    "@minecraft/math": "^1.3.5",
+    "@minecraft/vanilla-data": "^1.21.1",
+    "jsonui-scripting": "^2.0.2",
+    "scrapfly-sdk": "^0.5.1",
+    "witb-api": "file:../../API/witb-api"
+  },
+  "devDependencies": {
+    "@minecraft/server": "1.18.0-beta.1.21.60-preview.24",
+    "@types/node": "^20.14.10"
+  }
 }

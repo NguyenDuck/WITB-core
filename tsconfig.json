@@ -2,7 +2,10 @@
 	"compilerOptions": {
 		"module": "NodeNext",
 		"target": "ESNext",
-		"moduleResolution": "NodeNext"
+		"moduleResolution": "NodeNext",
+		"forceConsistentCasingInFileNames": true,
+		"allowSyntheticDefaultImports": true
 	},
-	"exclude": ["dist"]
+	"include": ["**/*.ts", "**/*.js", "data/filters/ui_builder/main.js"],
+	"exclude": ["node_modules/**/*.js"]
 }

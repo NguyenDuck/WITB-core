@@ -16,10 +16,45 @@
 			"minimize": {
 				"url": "github.com/cda94581/regolith-filters",
 				"version": "0.0.4"
+			},
+			"UI_builder": {
+				"runWith": "shell",
+				"command": "cd data/ui; bun run main.ts"
+			},
+			"UI": {
+				"runWith": "nodejs",
+				"script": "data/filters/UI-Copy/main.js"
 			}
 		},
 		"profiles": {
 			"default": {
+				"export": {
+					"readOnly": false,
+					"target": "development"
+				},
+				"filters": [
+					{
+						"filter": "minimize"
+					},
+					{
+						"filter": "esbuild_executor",
+						"settings": {
+							"buildOptions": {
+								"bundle": true,
+								"entryPoints": ["data/scripts/main.ts"],
+								"outfile": "BP/scripts/main.js",
+								"external": ["@minecraft/server", "@minecraft/server-ui", "@minecraft/server-gametest"],
+								"mainFields": ["main", "module"],
+								"tsconfig": "../../tsconfig.json",
+								"minify": false,
+								"sourcemap": "linked",
+								"platform": "neutral"
+							}
+						}
+					}
+				]
+			},
+			"preview": {
 				"export": {
 					"readOnly": false,
 					"target": "preview"
@@ -33,7 +68,7 @@
 						"settings": {
 							"buildOptions": {
 								"bundle": true,
-								"entryPoints": ["BP/scripts/main.ts"],
+								"entryPoints": ["data/scripts/main.ts"],
 								"external": ["@minecraft/server", "@minecraft/server-ui", "@minecraft/server-gametest"],
 								"mainFields": ["main", "module"],
 								"minify": false,
@@ -41,13 +76,19 @@
 								"platform": "neutral"
 							}
 						}
+					},
+					{
+						"filter": "UI_builder"
+					},
+					{
+						"filter": "UI"
 					}
 				]
 			},
 			"export": {
 				"export": {
 					"readOnly": false,
-					"target": "local"
+					"target": "development"
 				},
 				"filters": [
 					{
@@ -58,7 +99,7 @@
 						"settings": {
 							"buildOptions": {
 								"bundle": true,
-								"entryPoints": ["BP/scripts/main.ts"],
+								"entryPoints": ["data/scripts/main.ts"],
 								"external": ["@minecraft/server", "@minecraft/server-ui", "@minecraft/server-gametest"],
 								"mainFields": ["main", "module"],
 								"minify": true,

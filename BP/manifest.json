@@ -4,13 +4,12 @@
 		"authors": ["NguyenDuck"]
 	},
 	"header": {
-		"name": "WITB - What Is This Block",
-		"description": "Show infomation what block you seeing\n§dDiscord: @NguyenDuck",
-		"min_engine_version": [1, 21, 10],
+		"name": "WITB - Core",
+		"description": "API used to show whatever you seeing like you want to HUD screen",
+		"min_engine_version": [1, 21, 60],
 		"uuid": "56d8ab29-fa40-48ef-9139-0ec54f24be0a",
-		"version": [1, 0, 8]
+		"version": [1, 1, 0]
 	},
-	"capabilities": ["script_eval"],
 	"modules": [
 		{
 			"type": "data",
@@ -28,11 +27,12 @@
 	"dependencies": [
 		{
 			"uuid": "a356f352-4dc4-4090-a8f9-d5ec0c2485d3",
-			"version": [1, 0, 4]
+			"version": [1, 1, 0]
 		},
 		{
 			"module_name": "@minecraft/server",
-			"version": "1.13.0-beta"
+			"version": "1.18.0-beta"
 		}
-	]
+	],
+	"capabilities": ["script_eval"]
 }

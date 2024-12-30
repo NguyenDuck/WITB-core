@@ -4,10 +4,13 @@
 		{
 			"type": "minecraft-js",
 			"request": "attach",
-			"name": "Wait for Minecraft Debug Connections",
+			"name": "debug",
 			"mode": "listen",
-			"localRoot": "./BP/scripts",
-			"port": 19144
+			"localRoot": "${workspaceFolder}/data/scripts",
+			"port": 19144,
+			"sourceMapRoot": "${workspaceFolder}/.regolith/tmp/BP/scripts",
+			"generatedSourceRoot": "${workspaceFolder}/.regolith/tmp/BP/scripts",
+			"targetModuleUuid": "d17ae6d4-bc10-428c-975b-11d82e81f1b7"
 		}
 	]
 }
